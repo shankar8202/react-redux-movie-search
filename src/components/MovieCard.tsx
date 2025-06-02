@@ -6,7 +6,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = "https://via.placeholder.com/300x400/cccccc/666666?text=No+Image"
+    e.currentTarget.src = "https://m.media-amazon.com/images/I/61qbMx4oXJL._AC_UF1000,1000_QL80_.jpg"
   }
 
   return (
@@ -14,7 +14,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       <div className="movie-poster">
         <img
           src={
-            movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x400/cccccc/666666?text=No+Image"
+            movie.Poster !== "N/A" ? movie.Poster : "https://m.media-amazon.com/images/I/61qbMx4oXJL._AC_UF1000,1000_QL80_.jpg"
           }
           alt={movie.Title}
           onError={handleImageError}

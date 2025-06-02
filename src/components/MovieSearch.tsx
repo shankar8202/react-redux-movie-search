@@ -3,26 +3,39 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-// import type { RootState, AppDispatch } from "../store/store"
-import { fetchMovies, setSearchTerm, setCurrentPage, clearMovies } from "../lib/movieSlice"
+import { fetchMovies, fetchDefaultMovies, setSearchTerm, setCurrentPage, clearMovies } from "../lib/movieSlice"
 import MovieCard from "./MovieCard"
 import Pagination from "./Pagination"
 import LoadingSpinner from "./LoadingSpinner"
-import { AppDispatch, RootState } from "@/lib/store"
+import type { AppDispatch, RootState } from "@/lib/store"
 
 const MovieSearch: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>()
-    const { movies, loading, error, searchTerm, currentPage, totalPages } = useSelector(
-        (state: RootState) => state.movies,
-    )
+    const { movies, loading, error, searchTerm, currentPage, totalPages, defaultMoviesLoaded, defaultMovieQuery } =
+        useSelector((state: RootState) => state.movies)
 
     const [inputValue, setInputValue] = useState("")
+
+
+    useEffect(() => {
+        if (!searchTerm && !defaultMoviesLoaded && movies.length === 0) {
+            dispatch(fetchDefaultMovies({ page: 1 }))
+        }
+    }, [dispatch, searchTerm, defaultMoviesLoaded, movies.length])
+
 
     useEffect(() => {
         if (searchTerm.trim()) {
             dispatch(fetchMovies({ searchTerm, page: currentPage }))
         }
     }, [dispatch, searchTerm, currentPage])
+
+
+    useEffect(() => {
+        if (!searchTerm && defaultMoviesLoaded && defaultMovieQuery && currentPage > 1) {
+            dispatch(fetchDefaultMovies({ page: currentPage, query: defaultMovieQuery }))
+        }
+    }, [dispatch, searchTerm, currentPage, defaultMovieQuery])
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
@@ -31,6 +44,9 @@ const MovieSearch: React.FC = () => {
             dispatch(setCurrentPage(1))
         } else {
             dispatch(clearMovies())
+            dispatch(setSearchTerm(""))
+            dispatch(setCurrentPage(1))
+
         }
     }
 
@@ -39,6 +55,8 @@ const MovieSearch: React.FC = () => {
         if (!e.target.value.trim()) {
             dispatch(clearMovies())
             dispatch(setSearchTerm(""))
+            dispatch(setCurrentPage(1))
+
         }
     }
 
@@ -80,7 +98,9 @@ const MovieSearch: React.FC = () => {
                     <>
                         <div className="results-info">
                             <p>
-                                Showing page {currentPage} of {totalPages}
+                                {searchTerm
+                                    ? `Showing results for "${searchTerm}" - Page ${currentPage} of ${totalPages}`
+                                    : `Popular Movies: ${defaultMovieQuery} - Page ${currentPage} of ${totalPages}`}
                             </p>
                         </div>
 
@@ -102,9 +122,9 @@ const MovieSearch: React.FC = () => {
                     </div>
                 )}
 
-                {!searchTerm && !loading && (
+                {!loading && !error && !searchTerm && movies.length === 0 && !defaultMoviesLoaded && (
                     <div className="welcome-message">
-                        <p>Enter a movie title to start searching!</p>
+                        <p>Loading popular movies...</p>
                     </div>
                 )}
             </main>
