@@ -6,7 +6,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = "https://m.media-amazon.com/images/I/61qbMx4oXJL._AC_UF1000,1000_QL80_.jpg"
+    e.currentTarget.src = "https://media.istockphoto.com/id/2175700684/photo/abstract-glitter-background-bokeh-shallow-depth-of-field-selective-focus-loopable.webp?a=1&b=1&s=612x612&w=0&k=20&c=yVJotMu-d_iCcmw6rydJcxYYjxbidwQnyferJRirAfM="
   }
 
   return (
@@ -14,7 +14,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       <div className="movie-poster">
         <img
           src={
-            movie.Poster !== "N/A" ? movie.Poster : "https://m.media-amazon.com/images/I/61qbMx4oXJL._AC_UF1000,1000_QL80_.jpg"
+            movie.Poster !== "N/A" ? movie.Poster : "https://media.istockphoto.com/id/2175700684/photo/abstract-glitter-background-bokeh-shallow-depth-of-field-selective-focus-loopable.webp?a=1&b=1&s=612x612&w=0&k=20&c=yVJotMu-d_iCcmw6rydJcxYYjxbidwQnyferJRirAfM="
           }
           alt={movie.Title}
           onError={handleImageError}
